@@ -1,0 +1,8 @@
+# Composable-bundle layer contributed by dsh-plugin-btw.
+# Installed through `dsh plugin --profile <name> add dsh-plugin-btw`
+# (npm / tarball / git); the line registers the /btw host command and the
+# btwHistory projection. The browser half is discovered separately via the
+# package.json dsh.client declaration.
+- insert:
+    - id: btw
+      name: dsh-plugin-btw

@@ -1,0 +1,62 @@
+{
+  "name": "dsh-plugin-rewind",
+  "version": "0.1.1",
+  "description": "Rewind for DeepSeek Harness (dsh): restore a session's model context to an earlier point via an append-only surface replacement — /rewind command, picker, and turn-tail actions.",
+  "type": "module",
+  "license": "MIT",
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./client": "./src/client/index.ts",
+    "./planner": "./src/planner.ts",
+    "./rewind": "./src/rewind.ts",
+    "./types": "./src/types.ts",
+    "./package.json": "./package.json",
+    "./locale/*.json": "./locale/*.json"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-api-remotes",
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-commands",
+        "@deepseek-ai/dsh-client-ui-conversation",
+        "@deepseek-ai/dsh-client-ui-renderer"
+      ]
+    }
+  },
+  "engines": {
+    "dsh": ">=0.2.2-rc.1 <0.3.0"
+  },
+  "scripts": {
+    "test": "node ../../tools/smoke.mjs rewind tests/smoke.session.mjs && vitest run tests/planner.spec.ts",
+    "precheck": "node ../../tools/gen-tsconfig-paths.mjs rewind && node ../../tools/compose-check.mjs rewind",
+    "check": "tsc -p tsconfig.check.host.json --noEmit && tsc -p tsconfig.check.client.json --noEmit"
+  },
+  "files": [
+    "src",
+    "locale",
+    "cordis.patch.yml",
+    "README.md",
+    "README.zh.md"
+  ],
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "rewind",
+    "plugin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZaiMaxvx/dsh-utils.git",
+    "directory": "plugins/rewind"
+  },
+  "homepage": "https://github.com/ZaiMaxvx/dsh-utils/tree/main/plugins/rewind#readme",
+  "bugs": {
+    "url": "https://github.com/ZaiMaxvx/dsh-utils/issues"
+  }
+}

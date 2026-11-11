@@ -1,0 +1,6 @@
+# Development overlay — load the host half straight from TypeScript source:
+#   pnpm dsh web --patch ./dev.patch.yml
+# Patch lines must use absolute paths (adjust to your checkout).
+- insert:
+    - id: rewind
+      name: 'D:/Code/Projects/dsh-utils/repo-utils/plugins/rewind/src/index.ts'

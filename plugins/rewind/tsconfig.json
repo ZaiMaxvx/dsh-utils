@@ -1,0 +1,20 @@
+{
+  // Self-contained so tooling never chases an out-of-tree extends. When this
+  // package is dropped into the dsh workspace (packages/rewind/dsh-plugin-rewind),
+  // you may switch "compilerOptions" for "extends": "../../../tsconfig.base.json"
+  // to inherit the repo's source-plane paths. Outside the repo, `pnpm check`
+  // type-checks both faces against a dsh source tree instead.
+  "compilerOptions": {
+    "target": "es2024",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "types": ["node"]
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "tests/**/*.ts"]
+}

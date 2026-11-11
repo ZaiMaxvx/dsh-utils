@@ -1,0 +1,35 @@
+{
+  "name": "dsh-utils",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Utility plugins for DeepSeek Harness (dsh): /rewind context rewind and /btw side questions, in one pnpm workspace with shared verification tooling.",
+  "type": "module",
+  "license": "MIT",
+  "workspaces": [
+    "plugins/*"
+  ],
+  "scripts": {
+    "check": "node tools/check-all.mjs",
+    "test": "node tools/test-all.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/react": "^18.3.0",
+    "immer": "^10.0.0",
+    "react": "^18.3.0",
+    "tsx": "^4.19.0",
+    "typescript": "~5.9.0",
+    "vitest": "^5.1.0",
+    "zod": "^4.6.6",
+    "zustand": "^5.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZaiMaxvx/dsh-utils.git"
+  },
+  "homepage": "https://github.com/ZaiMaxvx/dsh-utils#readme",
+  "bugs": {
+    "url": "https://github.com/ZaiMaxvx/dsh-utils/issues"
+  },
+  "author": "ZaiMaxvx"
+}

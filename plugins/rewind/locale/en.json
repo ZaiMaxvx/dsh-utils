@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Rewind",
+    "description": "Restore a session's model context to an earlier point: /rewind command, undo picker, and per-turn rewind actions. History stays append-only — only the model context rolls back."
+  }
+}

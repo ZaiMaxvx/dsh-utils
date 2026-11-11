@@ -1,0 +1,70 @@
+{
+  "name": "dsh-plugin-btw",
+  "version": "0.1.0",
+  "description": "Side questions (/btw) for DeepSeek Harness (dsh): immediate tool-free answers from the current session context, without touching the main conversation — /btw command plus the right-sidebar BTW panel.",
+  "type": "module",
+  "license": "MIT",
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./client": "./src/client/index.ts",
+    "./types": "./src/types.ts",
+    "./sideask": "./src/sideask.ts",
+    "./history": "./src/history.ts",
+    "./package.json": "./package.json",
+    "./locale/*.json": "./locale/*.json"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-api-remotes",
+        "@deepseek-ai/dsh-api-session-controller",
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-commands",
+        "@deepseek-ai/dsh-client-ui-renderer",
+        "@deepseek-ai/dsh-client-ui-session",
+        "@deepseek-ai/dsh-client-ui-sidebar-right"
+      ]
+    }
+  },
+  "engines": {
+    "dsh": ">=0.2.2-rc.1 <0.3.0"
+  },
+  "scripts": {
+    "test": "node ../../tools/smoke.mjs btw tests/smoke.sideask.mjs && vitest run tests/fold.spec.ts tests/view.spec.ts",
+    "precheck": "node ../../tools/gen-tsconfig-paths.mjs btw && node ../../tools/compose-check.mjs btw",
+    "check": "tsc -p tsconfig.check.host.json --noEmit && tsc -p tsconfig.check.client.json --noEmit"
+  },
+  "dependencies": {
+    "zod": "4.6.6"
+  },
+  "files": [
+    "src",
+    "locale",
+    "cordis.patch.yml",
+    "LICENSE",
+    "README.md",
+    "README.zh.md"
+  ],
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "btw",
+    "side-question",
+    "plugin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZaiMaxvx/dsh-utils.git",
+    "directory": "plugins/btw"
+  },
+  "homepage": "https://github.com/ZaiMaxvx/dsh-utils/tree/main/plugins/btw#readme",
+  "bugs": {
+    "url": "https://github.com/ZaiMaxvx/dsh-utils/issues"
+  },
+  "author": "ZaiMaxvx"
+}

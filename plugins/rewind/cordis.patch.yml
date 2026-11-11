@@ -1,0 +1,8 @@
+# Composable-bundle layer contributed by dsh-plugin-rewind.
+# Installed through `dsh plugin --profile <name> add dsh-plugin-rewind`
+# (npm / tarball / git); the line resolves through Node module resolution to
+# this package's entry, which registers the /rewind host command. The browser
+# half is discovered separately via the package.json dsh.client declaration.
+- insert:
+    - id: rewind
+      name: dsh-plugin-rewind
