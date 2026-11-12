@@ -1,6 +1,7 @@
 node_modules/
-lib/
 dist/
+# Committed install artifacts (plugins ship lib/)
+!plugins/*/lib/**
 *.tsbuildinfo
 # Generated local verification configs (machine paths)
 plugins/*/tsconfig.paths.json

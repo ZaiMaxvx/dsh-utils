@@ -13,6 +13,8 @@
 
 两个插件均基于 dsh **v0.2.2-rc.1 / rc.2** 构建并双版本验证（`engines.dsh: >=0.2.2-rc.1 <0.3.0`，Node ≥ 24.9）。
 
+所有插件的可安装产物已**预构建并提交**在各插件 `lib/` 目录（host + client 两半），git / 路径 / tarball / registry 安装均**零构建授权**——修复了 0.1.x 安装后 `ERR_UNSUPPORTED_NODE_MODULES_TYPE_STRIPPING`（Node 拒载 node_modules 内 TS）的问题。
+
 ### 从本仓库安装（path 安装）
 
 每个插件都是带 `dsh.bundle` 声明的独立包，可按路径安装：

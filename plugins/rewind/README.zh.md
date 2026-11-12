@@ -65,10 +65,10 @@ dsh plugin --profile <name> add dsh-plugin-rewind
 dsh plugin --profile <name> add github:<you>/dsh-plugin-rewind
 ```
 
-发布到 npm 时应携带 tsdown 预构建的 `lib/`（与仓库内
-`tool-todo`/`time-context` 同构：host `lib/index.js` + client bundle +
-`dsh.bundle.patch` + `engines.dsh`）。本仓库的 `package.json` 指向 `src/`
-以便 source-plane 开发；`npm publish` 前请先构建。
+可安装产物已**预构建并提交**在 `lib/`（`main`/`exports` 指向它；由
+`tools/build.mjs` 生成——esbuild host 包 + `window.__ModuleLoader__`
+client 脚本）。git / 路径 / tarball / registry 四种安装均**零构建授权**；
+改源码后用 `npm run build` 重建。
 
 ## 开发
 
@@ -80,8 +80,8 @@ dsh plugin --profile <name> add github:<you>/dsh-plugin-rewind
 pnpm dsh web --patch /绝对路径/rewind-plugin/dev.patch.yml
 ```
 
-浏览器半由 web bundle 编译加载；完整 UI 请为 `dsh.client` 提供构建产物（或把
-本包放进仓库 `packages/rewind/`，由 workspace 构建统一处理两半）。
+两半产物均已预构建在 `lib/`（浏览器半为 `window.__ModuleLoader__` 注册脚本），
+改源码后 `npm run build` 重建。
 
 ### 验证（无需安装 dsh 工作区）
 

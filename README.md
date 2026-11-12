@@ -15,6 +15,12 @@ New plugins drop in ready-made.
 Both are built and verified against dsh **v0.2.2-rc.1 / rc.2**
 (`engines.dsh: >=0.2.2-rc.1 <0.3.0`, Node ≥ 24.9).
 
+Every plugin ships **prebuilt, committed artifacts** under its `lib/`
+(host and client halves): git / path / tarball / registry installs need **zero
+build authorization** — fixing the 0.1.x activation failure
+(`ERR_UNSUPPORTED_NODE_MODULES_TYPE_STRIPPING`; Node refuses to load TypeScript
+inside node_modules).
+
 ### Installing from this repository (path installs)
 
 Each plugin is a standalone package with a `dsh.bundle` declaration and can be
