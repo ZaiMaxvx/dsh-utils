@@ -12,6 +12,8 @@ import type { Context as ClientContext } from '@deepseek-ai/cordis'
 import type { SessionId } from '@deepseek-ai/dsh-session/types'
 // Type-only: pulls the client ctx.sessions merge (binding + session.command).
 import type {} from '@deepseek-ai/dsh-api-session-controller/client'
+// Type-only: pulls the generated Remote merge (ctx.remote.commands.execute).
+import type {} from '@deepseek-ai/dsh-api-remotes/client'
 // Type-only: pulls the SlotRegistry service merge (ctx.slots).
 import type {} from '@deepseek-ai/dsh-client-ui-renderer/client'
 // Type-only: pulls the uiConversation events service (marker definition).
@@ -26,6 +28,8 @@ import type {} from '@deepseek-ai/dsh-client-ui-commands/client'
 // Type-only: pulls the locale plugin's Context merge (ctx.locale).
 import type {} from '@deepseek-ai/dsh-client-locale/client'
 import { RewindAssistantAction } from './RewindAssistantAction.tsx'
+import { RewindUserRewrite } from './RewindUserRewrite.tsx'
+import type { RewindUserRewriteInjected } from './RewindUserRewrite.tsx'
 import type { RewindAssistantActionInjected } from './RewindAssistantAction.tsx'
 import { RewindMarkerNode } from './RewindMarkerNode.tsx'
 import { rewindMarkerDefinition } from './rewindMarkerDefinition.ts'
@@ -36,7 +40,7 @@ import { en, zh } from './locales.ts'
 const NS = 'rewind'
 
 /** Required services: slots, the conversation event registry, sessions, copy, command UI. */
-export const inject = ['slots', 'uiConversation', 'sessions', 'locale', 'commandUi']
+export const inject = ['slots', 'uiConversation', 'sessions', 'locale', 'commandUi', 'remote', 'remote.commands']
 
 /** Offered undo depths in the bare-`/rewind` picker. */
 const PICKER_TURNS = [1, 2, 3, 4, 5] as const
@@ -84,6 +88,32 @@ export function apply(ctx: ClientContext): void {
       submit: line => { submitLine(ctx, sessionId, line) },
     }),
   }, RewindAssistantAction))
+
+  // The Esc-Esc style action above one durable user bubble: drop this
+  // message onward, then put its text back in the composer. priority 5
+  // yields to liveshare's share-viewer attribution rows (chain seat).
+  ctx.slots.inject('conversation.chat.user.before', () => ctx.slots.register({
+    name: 'conversation.chat.user.before',
+    priority: 5,
+    locale: NS,
+    select: owner => owner.kind === 'user' ? {} : null,
+    inject: (sessionId): RewindUserRewriteInjected => ({
+      rewindToBefore: async seq => {
+        const result = await ctx.remote.commands.execute(sessionId, `/rewind to ${seq - 1}`, [])
+        if (!result.ok || result.value === undefined) return { kind: 'error' }
+        return { kind: result.value.result.kind }
+      },
+      restoreDraft: text => {
+        const scope = ctx.sessions.scope(sessionId)
+        const conversation = scope?.get('conversation')
+        if (scope === undefined || conversation === undefined) return false
+        const input = conversation.input.for(scope)
+        input.setDraft(text)
+        input.focus()
+        return true
+      },
+    }),
+  }, RewindUserRewrite))
 
   // The localized /rewind command row.
   ctx.slots.inject('conversation.chat.commandview', () => ctx.slots.register({

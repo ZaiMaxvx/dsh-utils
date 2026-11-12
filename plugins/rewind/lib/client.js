@@ -81,9 +81,13 @@ function RewindAssistantAction({
   ) });
 }
 
-// dsh-css:D:\Code\Projects\dsh-utils\repo-utils\plugins\rewind\src\client\RewindMarkerNode.module.css
-var css2 = ".MoUBoa_marker{border-left:3px solid var(--dsw-alias-accent,#4f7cff);border-radius:var(--dsw-radius-sm,6px);background:color-mix(in srgb, var(--dsw-alias-accent,#4f7cff) 10%, transparent);align-items:center;gap:.5rem;margin:.375rem 0;padding:.4rem .625rem;display:flex}.MoUBoa_glyph{opacity:.8;font-size:.875rem;line-height:1}.MoUBoa_body{flex-wrap:wrap;align-items:baseline;gap:.375rem;min-width:0;display:flex}.MoUBoa_title{font-size:.8125rem;font-weight:600}.MoUBoa_detail{opacity:.75;font-size:.75rem}";
-var tagId2 = "@zaimaxvx/dsh-plugin-rewind/RewindMarkerNode.module.css";
+// plugins/rewind/src/client/RewindUserRewrite.tsx
+var import_react2 = require("react");
+var import_dsh_client_ui_primitives2 = require("@deepseek-ai/dsh-client-ui-primitives");
+
+// dsh-css:D:\Code\Projects\dsh-utils\repo-utils\plugins\rewind\src\client\RewindUserRewrite.module.css
+var css2 = ".B6g45W_row{justify-content:flex-end;display:flex}.B6g45W_action{width:calc(28px + var(--dsh-content-font-delta,0px));height:calc(28px + var(--dsh-content-font-delta,0px));border-radius:var(--dsw-radius-sm,6px);color:var(--dsw-alias-label-tertiary,inherit);cursor:pointer;background:0 0;border:none;justify-content:center;align-items:center;padding:6px;display:inline-flex}.B6g45W_action svg{width:calc(15px + var(--dsh-content-font-delta,0px));height:calc(15px + var(--dsh-content-font-delta,0px))}@media (hover:hover){.B6g45W_action:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover,#7f7f7f1f);color:var(--dsw-alias-label-secondary,inherit)}}.B6g45W_action:focus-visible:not(:disabled){background:var(--dsw-alias-interactive-bg-hover,#7f7f7f1f);color:var(--dsw-alias-label-secondary,inherit)}.B6g45W_action:disabled{cursor:default;opacity:.4}";
+var tagId2 = "@zaimaxvx/dsh-plugin-rewind/RewindUserRewrite.module.css";
 if (typeof document !== "undefined" && document.querySelector("style[data-plugin-css=" + JSON.stringify(tagId2) + "]") === null) {
   const tag = document.createElement("style");
   tag.dataset.plugin = "@zaimaxvx/dsh-plugin-rewind";
@@ -91,17 +95,87 @@ if (typeof document !== "undefined" && document.querySelector("style[data-plugin
   tag.textContent = css2;
   document.head.appendChild(tag);
 }
+var RewindUserRewrite_default = { "action": "B6g45W_action", "row": "B6g45W_row" };
+
+// plugins/rewind/src/client/RewindUserRewrite.tsx
+var import_jsx_runtime2 = require("react/jsx-runtime");
+function RewindUserRewrite({
+  source,
+  rewindToBefore,
+  restoreDraft,
+  t,
+  useChat,
+  useSessionStatus,
+  sessionId
+}) {
+  const [pending, setPending] = (0, import_react2.useState)(false);
+  const facts = useChat((snapshot) => {
+    let markers;
+    for (const node of snapshot.nodes.values()) {
+      if (node.kind !== "rewind-marker") continue;
+      markers ??= [];
+      markers.push({ keep: node.data.keepThroughSeq, at: node.data.seq });
+    }
+    for (const node of snapshot.nodes.values()) {
+      if (node.kind !== "user" || node.data.source !== source) continue;
+      const masked = markers?.some((m) => m.keep < node.data.seq && node.data.seq < m.at) === true;
+      let text = "";
+      for (const block of node.data.content) {
+        if (block.type === "text") text += block.text;
+      }
+      return { seq: node.data.seq, text, masked };
+    }
+    return void 0;
+  });
+  const working = useSessionStatus((snapshot) => snapshot.get(sessionId)?.running) === true;
+  const onEdit = (0, import_react2.useCallback)(() => {
+    if (facts === void 0 || working || pending) return;
+    if (facts.masked) {
+      restoreDraft(facts.text);
+      return;
+    }
+    setPending(true);
+    void rewindToBefore(facts.seq).then((result) => {
+      setPending(false);
+      if (result?.kind === "success") restoreDraft(facts.text);
+    });
+  }, [facts, pending, restoreDraft, rewindToBefore, working]);
+  if (facts === void 0 || facts.text.length === 0) return null;
+  const label = working ? t("action.busy") : facts.masked ? t("action.restore") : t("action.rewrite");
+  return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: RewindUserRewrite_default.row, children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_dsh_client_ui_primitives2.Tooltip, { label, side: "bottom", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+    "button",
+    {
+      type: "button",
+      className: RewindUserRewrite_default.action,
+      "aria-label": t("action.rewrite"),
+      disabled: working || pending,
+      onClick: onEdit,
+      children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_dsh_client_ui_primitives2.IconEditOutlineRegular, {})
+    }
+  ) }) });
+}
+
+// dsh-css:D:\Code\Projects\dsh-utils\repo-utils\plugins\rewind\src\client\RewindMarkerNode.module.css
+var css3 = ".MoUBoa_marker{border-left:3px solid var(--dsw-alias-accent,#4f7cff);border-radius:var(--dsw-radius-sm,6px);background:color-mix(in srgb, var(--dsw-alias-accent,#4f7cff) 10%, transparent);align-items:center;gap:.5rem;margin:.375rem 0;padding:.4rem .625rem;display:flex}.MoUBoa_glyph{opacity:.8;font-size:.875rem;line-height:1}.MoUBoa_body{flex-wrap:wrap;align-items:baseline;gap:.375rem;min-width:0;display:flex}.MoUBoa_title{font-size:.8125rem;font-weight:600}.MoUBoa_detail{opacity:.75;font-size:.75rem}";
+var tagId3 = "@zaimaxvx/dsh-plugin-rewind/RewindMarkerNode.module.css";
+if (typeof document !== "undefined" && document.querySelector("style[data-plugin-css=" + JSON.stringify(tagId3) + "]") === null) {
+  const tag = document.createElement("style");
+  tag.dataset.plugin = "@zaimaxvx/dsh-plugin-rewind";
+  tag.dataset.pluginCss = tagId3;
+  tag.textContent = css3;
+  document.head.appendChild(tag);
+}
 var RewindMarkerNode_default = { "body": "MoUBoa_body", "detail": "MoUBoa_detail", "glyph": "MoUBoa_glyph", "marker": "MoUBoa_marker", "title": "MoUBoa_title" };
 
 // plugins/rewind/src/client/RewindMarkerNode.tsx
-var import_jsx_runtime2 = require("react/jsx-runtime");
+var import_jsx_runtime3 = require("react/jsx-runtime");
 function RewindMarkerNode({ node, t }) {
   const { maskedCount, keepThroughSeq, seq } = node.data;
-  return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: RewindMarkerNode_default.marker, "data-rewind-seq": seq, children: [
-    /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: RewindMarkerNode_default.glyph, "aria-hidden": true, children: "\u23F1" }),
-    /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: RewindMarkerNode_default.body, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: RewindMarkerNode_default.title, children: t("marker.title") }),
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: RewindMarkerNode_default.detail, children: t("marker.detail", { count: maskedCount, keep: keepThroughSeq }) })
+  return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: RewindMarkerNode_default.marker, "data-rewind-seq": seq, children: [
+    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: RewindMarkerNode_default.glyph, "aria-hidden": true, children: "\u23F1" }),
+    /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: RewindMarkerNode_default.body, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: RewindMarkerNode_default.title, children: t("marker.title") }),
+      /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: RewindMarkerNode_default.detail, children: t("marker.detail", { count: maskedCount, keep: keepThroughSeq }) })
     ] })
   ] });
 }
@@ -156,19 +230,19 @@ var rewindMarkerDefinition = {
 };
 
 // dsh-css:D:\Code\Projects\dsh-utils\repo-utils\plugins\rewind\src\client\RewindCommandCard.module.css
-var css3 = ".KkjaDW_card{flex-wrap:wrap;align-items:baseline;gap:.5rem;padding:.25rem 0;font-size:.8125rem;display:flex}.KkjaDW_title{font-weight:600}.KkjaDW_pending{opacity:.6}.KkjaDW_error{color:var(--dsw-alias-danger,#d5484f)}.KkjaDW_result{opacity:.85}";
-var tagId3 = "@zaimaxvx/dsh-plugin-rewind/RewindCommandCard.module.css";
-if (typeof document !== "undefined" && document.querySelector("style[data-plugin-css=" + JSON.stringify(tagId3) + "]") === null) {
+var css4 = ".KkjaDW_card{flex-wrap:wrap;align-items:baseline;gap:.5rem;padding:.25rem 0;font-size:.8125rem;display:flex}.KkjaDW_title{font-weight:600}.KkjaDW_pending{opacity:.6}.KkjaDW_error{color:var(--dsw-alias-danger,#d5484f)}.KkjaDW_result{opacity:.85}";
+var tagId4 = "@zaimaxvx/dsh-plugin-rewind/RewindCommandCard.module.css";
+if (typeof document !== "undefined" && document.querySelector("style[data-plugin-css=" + JSON.stringify(tagId4) + "]") === null) {
   const tag = document.createElement("style");
   tag.dataset.plugin = "@zaimaxvx/dsh-plugin-rewind";
-  tag.dataset.pluginCss = tagId3;
-  tag.textContent = css3;
+  tag.dataset.pluginCss = tagId4;
+  tag.textContent = css4;
   document.head.appendChild(tag);
 }
 var RewindCommandCard_default = { "card": "KkjaDW_card", "error": "KkjaDW_error", "pending": "KkjaDW_pending", "result": "KkjaDW_result", "title": "KkjaDW_title" };
 
 // plugins/rewind/src/client/RewindCommandCard.tsx
-var import_jsx_runtime3 = require("react/jsx-runtime");
+var import_jsx_runtime4 = require("react/jsx-runtime");
 function maskedCountOf(outcomeText) {
   if (outcomeText === void 0) return void 0;
   const match = /Rewound:\s*(\d+)/.exec(outcomeText);
@@ -176,15 +250,17 @@ function maskedCountOf(outcomeText) {
 }
 function RewindCommandCard({ node, t }) {
   const outcome = node.outcome;
-  return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: RewindCommandCard_default.card, children: [
-    /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: RewindCommandCard_default.title, children: t("cmd.title") }),
-    outcome === null ? /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: RewindCommandCard_default.pending, children: t("cmd.pending") }) : outcome.kind === "error" ? /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: RewindCommandCard_default.error, children: outcome.text ?? t("cmd.failed") }) : /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: RewindCommandCard_default.result, children: maskedCountOf(outcome.text) !== void 0 ? t("cmd.summary", { count: maskedCountOf(outcome.text) }) : outcome.text ?? t("cmd.nothing") })
+  return /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)("div", { className: RewindCommandCard_default.card, children: [
+    /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: RewindCommandCard_default.title, children: t("cmd.title") }),
+    outcome === null ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: RewindCommandCard_default.pending, children: t("cmd.pending") }) : outcome.kind === "error" ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: RewindCommandCard_default.error, children: outcome.text ?? t("cmd.failed") }) : /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: RewindCommandCard_default.result, children: maskedCountOf(outcome.text) !== void 0 ? t("cmd.summary", { count: maskedCountOf(outcome.text) }) : outcome.text ?? t("cmd.nothing") })
   ] });
 }
 
 // plugins/rewind/src/client/locales.ts
 var zh = {
   "action.rewindHere": "\u56DE\u9000\u5230\u8FD9\u91CC",
+  "action.rewrite": "\u56DE\u9000\u5E76\u91CD\u65B0\u7F16\u8F91",
+  "action.restore": "\u53D6\u56DE\u539F\u6587\uFF08\u5DF2\u56DE\u9000\u8FC7\uFF09",
   "action.busy": "\u667A\u80FD\u4F53\u6B63\u5728\u8FD0\u884C\uFF0C\u8BF7\u5148\u505C\u6B62\u518D\u56DE\u9000",
   "picker.undo1": "\u64A4\u9500\u6700\u8FD1 1 \u8F6E",
   "picker.undoN": "\u64A4\u9500\u6700\u8FD1 {n} \u8F6E",
@@ -199,6 +275,8 @@ var zh = {
 };
 var en = {
   "action.rewindHere": "Rewind to here",
+  "action.rewrite": "Rewind and edit",
+  "action.restore": "Restore text (already rewound)",
   "action.busy": "The agent is working; stop it before rewinding",
   "picker.undo1": "Undo the last turn",
   "picker.undoN": "Undo the last {n} turns",
@@ -214,7 +292,7 @@ var en = {
 
 // plugins/rewind/src/client/index.ts
 var NS = "rewind";
-var inject = ["slots", "uiConversation", "sessions", "locale", "commandUi"];
+var inject = ["slots", "uiConversation", "sessions", "locale", "commandUi", "remote", "remote.commands"];
 var PICKER_TURNS = [1, 2, 3, 4, 5];
 function submitLine(ctx, sessionId, line) {
   const binding = ctx.sessions.binding(sessionId);
@@ -252,6 +330,28 @@ function apply(ctx) {
       }
     })
   }, RewindAssistantAction));
+  ctx.slots.inject("conversation.chat.user.before", () => ctx.slots.register({
+    name: "conversation.chat.user.before",
+    priority: 5,
+    locale: NS,
+    select: (owner) => owner.kind === "user" ? {} : null,
+    inject: (sessionId) => ({
+      rewindToBefore: async (seq) => {
+        const result = await ctx.remote.commands.execute(sessionId, `/rewind to ${seq - 1}`, []);
+        if (!result.ok || result.value === void 0) return { kind: "error" };
+        return { kind: result.value.result.kind };
+      },
+      restoreDraft: (text) => {
+        const scope = ctx.sessions.scope(sessionId);
+        const conversation = scope?.get("conversation");
+        if (scope === void 0 || conversation === void 0) return false;
+        const input = conversation.input.for(scope);
+        input.setDraft(text);
+        input.focus();
+        return true;
+      }
+    })
+  }, RewindUserRewrite));
   ctx.slots.inject("conversation.chat.commandview", () => ctx.slots.register({
     name: "conversation.chat.commandview",
     key: "rewind",

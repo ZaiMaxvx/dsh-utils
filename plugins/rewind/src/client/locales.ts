@@ -3,6 +3,8 @@
 /** Simplified Chinese dictionary (the key-set source of truth). */
 export const zh = {
   'action.rewindHere': '回退到这里',
+  'action.rewrite': '回退并重新编辑',
+  'action.restore': '取回原文（已回退过）',
   'action.busy': '智能体正在运行，请先停止再回退',
   'picker.undo1': '撤销最近 1 轮',
   'picker.undoN': '撤销最近 {n} 轮',
@@ -29,6 +31,8 @@ declare module '@deepseek-ai/dsh-client-ui-slots' {
 /** English dictionary, checked complete against the zh key set. */
 export const en = {
   'action.rewindHere': 'Rewind to here',
+  'action.rewrite': 'Rewind and edit',
+  'action.restore': 'Restore text (already rewound)',
   'action.busy': 'The agent is working; stop it before rewinding',
   'picker.undo1': 'Undo the last turn',
   'picker.undoN': 'Undo the last {n} turns',

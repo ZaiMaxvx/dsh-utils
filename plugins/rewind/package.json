@@ -1,7 +1,7 @@
 {
   "name": "@zaimaxvx/dsh-plugin-rewind",
-  "version": "0.2.0",
-  "description": "Rewind for DeepSeek Harness (dsh): restore a session's model context to an earlier point via an append-only surface replacement — /rewind command, picker, and turn-tail actions.",
+  "version": "0.2.1",
+  "description": "Rewind for DeepSeek Harness (dsh): restore a session's model context to an earlier point via an append-only surface replacement — /rewind command, picker, and turn-tail actions, plus an Esc-Esc style edit-resend action on user messages.",
   "type": "module",
   "license": "MIT",
   "main": "lib/index.js",

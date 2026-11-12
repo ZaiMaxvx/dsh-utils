@@ -26,7 +26,8 @@ after:   [system] [user1] [rewind marker]        ← model context
 
 | Surface | Entry | Effect |
 |---|---|---|
-| Web chat, turn tail | **Retry this turn** / **Rewind to here** buttons | Retry: drop this turn onward (rephrase its prompt). Rewind to here: keep this turn, drop everything after. Buttons disable while the agent runs. |
+| Web chat, user message | **Rewind and edit** button above the bubble | Esc-Esc style: drop this message onward and put its text back in the composer, focused, ready to rephrase. On already-rewound messages it only restores the text. |
+| Web chat, assistant message | **Rewind to here** (clock icon in the copy/branch strip) | Keep everything through this reply, drop what follows. Disabled while the agent runs. |
 | Web composer, `/rewind` | Bare invocation opens an **undo picker** (last 1–5 turns) | Submits `/rewind <n>` through the command channel. |
 | Any surface (Web, SDK, headless) | `/rewind <n>` | Undo the last `n` turns. |
 | Any surface | `/rewind turn <k>` | Undo everything from the `k`-th turn on. |
@@ -104,6 +105,14 @@ node_modules), which does not occur in the repo's own build.
 `tests/rewind-session.spec.ts` additionally runs inside the dsh workspace
 (copy the package under `packages/rewind/`, where the repo vitest config
 resolves the `@deepseek-ai/*` source plane).
+
+### Limitations
+
+- The rewrite-resend action restores the message text only; attachments
+  (images / file receipts) are not replayed into the composer.
+- Restoring replaces any unsent draft in the composer (as Esc-Esc does).
+- The user-row action renders above the bubble (dsh has no user-row icon slot
+  yet); it yields to liveshare's share-viewer attribution rows.
 
 ## Configuration
 
