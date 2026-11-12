@@ -111,6 +111,31 @@ function BtwTab({ submit, t, useProjection }) {
   ] });
 }
 
+// plugins/btw/src/client/BtwCommandCard.tsx
+var import_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primitives");
+
+// dsh-css:D:\Code\Projects\dsh-utils\repo-utils\plugins\btw\src\client\BtwCommandCard.module.css
+var css2 = "._4E6h3G_card{flex-direction:column;gap:.375rem;padding:.375rem 0;display:flex}._4E6h3G_question{overflow-wrap:anywhere;font-size:.8125rem;font-weight:600}._4E6h3G_answer{overflow-wrap:anywhere;font-size:.8125rem;line-height:1.45}._4E6h3G_answer :first-child{margin-top:0}._4E6h3G_answer :last-child{margin-bottom:0}._4E6h3G_pending,._4E6h3G_error{opacity:.7;margin:0;font-size:.8125rem}._4E6h3G_error{opacity:.9;color:var(--dsw-alias-danger,#d5484f)}";
+var tagId2 = "dsh-plugin-btw/BtwCommandCard.module.css";
+if (typeof document !== "undefined" && document.querySelector("style[data-plugin-css=" + JSON.stringify(tagId2) + "]") === null) {
+  const tag = document.createElement("style");
+  tag.dataset.plugin = "dsh-plugin-btw";
+  tag.dataset.pluginCss = tagId2;
+  tag.textContent = css2;
+  document.head.appendChild(tag);
+}
+var BtwCommandCard_default = { "answer": "_4E6h3G_answer", "card": "_4E6h3G_card", "error": "_4E6h3G_error", "pending": "_4E6h3G_pending", "question": "_4E6h3G_question" };
+
+// plugins/btw/src/client/BtwCommandCard.tsx
+var import_jsx_runtime2 = require("react/jsx-runtime");
+function BtwCommandCard({ node, t }) {
+  const outcome = node.outcome;
+  return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: BtwCommandCard_default.card, children: [
+    /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: BtwCommandCard_default.question, children: node.args ?? t("cmd.untitled") }),
+    outcome === null ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: BtwCommandCard_default.pending, children: t("cmd.pending") }) : outcome.kind === "error" ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: BtwCommandCard_default.error, children: outcome.text ?? t("cmd.failed") }) : /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: BtwCommandCard_default.answer, children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_dsh_client_ui_primitives.MarkdownText, { text: outcome.text ?? "" }) })
+  ] });
+}
+
 // plugins/btw/src/client/locales.ts
 var zh = {
   "tab.title": "BTW \u4FA7\u95EE",
@@ -122,7 +147,10 @@ var zh = {
   "panel.error": "\u4FA7\u95EE\u5931\u8D25",
   "panel.emptyQuestion": "\u95EE\u9898\u4E0D\u80FD\u4E3A\u7A7A",
   "entry.pending": "\u601D\u8003\u4E2D\u2026",
-  "entry.error": "\u5931\u8D25"
+  "entry.error": "\u5931\u8D25",
+  "cmd.untitled": "\u4FA7\u95EE",
+  "cmd.pending": "\u601D\u8003\u4E2D\u2026",
+  "cmd.failed": "\u4FA7\u95EE\u5931\u8D25"
 };
 var en = {
   "tab.title": "BTW",
@@ -134,7 +162,10 @@ var en = {
   "panel.error": "Side question failed",
   "panel.emptyQuestion": "Question must not be empty",
   "entry.pending": "Thinking\u2026",
-  "entry.error": "Failed"
+  "entry.error": "Failed",
+  "cmd.untitled": "Side question",
+  "cmd.pending": "Thinking\u2026",
+  "cmd.failed": "Side question failed"
 };
 
 // plugins/btw/src/client/index.ts
@@ -171,13 +202,21 @@ function apply(ctx) {
       }
     })
   }, BtwTab));
+  ctx.slots.inject("conversation.chat.commandview", () => ctx.slots.register({
+    name: "conversation.chat.commandview",
+    key: "btw",
+    locale: NS
+  }, BtwCommandCard));
   ctx.effect(() => ctx.commandUi.decorate({
     name: "btw",
     available: () => true,
     ui: {
       kind: "action",
       run: () => {
-        ctx.sidebarRight.openTab(TAB_KIND);
+        try {
+          ctx.sidebarRight.openTab(TAB_KIND);
+        } catch {
+        }
       }
     }
   }), "btw: /btw opens the panel");

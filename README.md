@@ -9,8 +9,8 @@ New plugins drop in ready-made.
 
 | Plugin | Version | What it does | Standalone install |
 |---|---|---|---|
-| [rewind](plugins/rewind/) | 0.1.1 | `/rewind`: restore a session's **model context** to an earlier point via an append-only surface replacement (compaction's channel) — command, undo picker, per-turn actions | `dsh plugin --profile <n> add github:ZaiMaxvx/dsh-rewind` |
-| [btw](plugins/btw/) | 0.1.0 | `/btw`: immediate **side questions** — a lightweight one-shot answer from the current context, no tools, never enters the main history; right-sidebar BTW panel with inline asking | `dsh plugin --profile <n> add github:ZaiMaxvx/dsh-btw` |
+| [rewind](plugins/rewind/) | 0.2.0 | `/rewind`: restore a session's **model context** to an earlier point via an append-only surface replacement (compaction's channel) — command, undo picker, per-turn actions | `dsh plugin --profile <n> add github:ZaiMaxvx/dsh-rewind` |
+| [btw](plugins/btw/) | 0.1.2 | `/btw`: immediate **side questions** — a lightweight one-shot answer from the current context, no tools, never enters the main history; right-sidebar BTW panel with inline asking | `dsh plugin --profile <n> add github:ZaiMaxvx/dsh-btw` |
 
 Both are built and verified against dsh **v0.2.2-rc.1 / rc.2**
 (`engines.dsh: >=0.2.2-rc.1 <0.3.0`, Node ≥ 24.9).
@@ -20,6 +20,11 @@ Every plugin ships **prebuilt, committed artifacts** under its `lib/`
 build authorization** — fixing the 0.1.x activation failure
 (`ERR_UNSUPPORTED_NODE_MODULES_TYPE_STRIPPING`; Node refuses to load TypeScript
 inside node_modules).
+
+
+> **npm note**: the unscoped name `dsh-plugin-rewind` on npm is an unrelated
+community placeholder. This plugin publishes as `@zaimaxvx/dsh-plugin-rewind`;
+git installs (`github:ZaiMaxvx/dsh-rewind`) are unaffected.
 
 ### Installing from this repository (path installs)
 

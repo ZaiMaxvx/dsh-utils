@@ -1,0 +1,25 @@
+/* The /rewind command row. */
+.card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
+  font-size: 0.8125rem;
+}
+
+.title {
+  font-weight: 600;
+}
+
+.pending {
+  opacity: 0.6;
+}
+
+.error {
+  color: var(--dsw-alias-danger, #d5484f);
+}
+
+.result {
+  opacity: 0.85;
+}

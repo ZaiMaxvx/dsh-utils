@@ -16,12 +16,15 @@ import type {} from '@deepseek-ai/dsh-client-ui-renderer/client'
 import type {} from '@deepseek-ai/dsh-client-ui-sidebar-right/client'
 // Type-only: pulls the standard session/global hook kit (useProjection).
 import type {} from '@deepseek-ai/dsh-client-ui-session/client'
+// Type-only: pulls the chat slot map (conversation.chat.commandview keyed entry).
+import type {} from '@deepseek-ai/dsh-client-ui-chat/client'
 // Type-only: pulls the command UI's Context merge (ctx.commandUi).
 import type {} from '@deepseek-ai/dsh-client-ui-commands/client'
 // Type-only: pulls the locale plugin's Context merge (ctx.locale).
 import type {} from '@deepseek-ai/dsh-client-locale/client'
 import { BtwTab } from './BtwTab.tsx'
 import type { BtwTabInjected } from './BtwTab.tsx'
+import { BtwCommandCard } from './BtwCommandCard.tsx'
 import { en, zh } from './locales.ts'
 
 /** Dictionary namespace owned by this plugin. */
@@ -71,13 +74,21 @@ export function apply(ctx: ClientContext): void {
     }),
   }, BtwTab))
 
+  // The /btw command row: markdown-rendered side answers.
+  ctx.slots.inject('conversation.chat.commandview', () => ctx.slots.register({
+    name: 'conversation.chat.commandview',
+    key: 'btw',
+    locale: NS,
+  }, BtwCommandCard))
+
   // Bare /btw opens the panel; an argued /btw line never passes through here.
+  // openTab throws when no session surface is mounted — swallow that case.
   ctx.effect(() => ctx.commandUi.decorate({
     name: 'btw',
     available: () => true,
     ui: {
       kind: 'action',
-      run: () => { ctx.sidebarRight.openTab(TAB_KIND) },
+      run: () => { try { ctx.sidebarRight.openTab(TAB_KIND) } catch { /* no session surface */ } },
     },
   }), 'btw: /btw opens the panel')
 }

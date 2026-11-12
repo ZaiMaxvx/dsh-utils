@@ -8,12 +8,16 @@
 
 | 插件 | 版本 | 功能 | 安装（独立仓库） |
 |---|---|---|---|
-| [rewind](plugins/rewind/) | 0.1.1 | `/rewind`：把会话的**模型上下文**回退到更早位置（append-only surface 替换，compaction 同款通道）；命令 + 撤销选择器 + 每轮回退按钮 | `dsh plugin --profile <n> add github:ZaiMaxvx/dsh-rewind` |
-| [btw](plugins/btw/) | 0.1.0 | `/btw`：**即时侧问**——基于当前上下文的轻量单轮作答，禁工具、不进主历史；右侧边栏 BTW 面板（历史 + 内联提问） | `dsh plugin --profile <n> add github:ZaiMaxvx/dsh-btw` |
+| [rewind](plugins/rewind/) | 0.2.0 | `/rewind`：把会话的**模型上下文**回退到更早位置（append-only surface 替换，compaction 同款通道）；命令 + 撤销选择器 + 每轮回退按钮 | `dsh plugin --profile <n> add github:ZaiMaxvx/dsh-rewind` |
+| [btw](plugins/btw/) | 0.1.2 | `/btw`：**即时侧问**——基于当前上下文的轻量单轮作答，禁工具、不进主历史；右侧边栏 BTW 面板（历史 + 内联提问） | `dsh plugin --profile <n> add github:ZaiMaxvx/dsh-btw` |
 
 两个插件均基于 dsh **v0.2.2-rc.1 / rc.2** 构建并双版本验证（`engines.dsh: >=0.2.2-rc.1 <0.3.0`，Node ≥ 24.9）。
 
 所有插件的可安装产物已**预构建并提交**在各插件 `lib/` 目录（host + client 两半），git / 路径 / tarball / registry 安装均**零构建授权**——修复了 0.1.x 安装后 `ERR_UNSUPPORTED_NODE_MODULES_TYPE_STRIPPING`（Node 拒载 node_modules 内 TS）的问题。
+
+
+> **npm 提示**：npm 上的无 scope 名 `dsh-plugin-rewind` 是无关的社区占位包。本插件
+npm 名为 `@zaimaxvx/dsh-plugin-rewind`；git 安装（`github:ZaiMaxvx/dsh-rewind`）不受影响。
 
 ### 从本仓库安装（path 安装）
 

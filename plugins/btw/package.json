@@ -1,6 +1,6 @@
 {
   "name": "dsh-plugin-btw",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Side questions (/btw) for DeepSeek Harness (dsh): immediate tool-free answers from the current session context, without touching the main conversation — /btw command plus the right-sidebar BTW panel.",
   "type": "module",
   "license": "MIT",
@@ -26,6 +26,7 @@
         "@deepseek-ai/dsh-api-remotes",
         "@deepseek-ai/dsh-api-session-controller",
         "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-chat",
         "@deepseek-ai/dsh-client-ui-commands",
         "@deepseek-ai/dsh-client-ui-renderer",
         "@deepseek-ai/dsh-client-ui-session",

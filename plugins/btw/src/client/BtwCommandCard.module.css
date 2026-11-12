@@ -1,0 +1,39 @@
+/* The /btw command row. */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding: 0.375rem 0;
+}
+
+.question {
+  font-weight: 600;
+  font-size: 0.8125rem;
+  overflow-wrap: anywhere;
+}
+
+.answer {
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.answer :first-child {
+  margin-top: 0;
+}
+
+.answer :last-child {
+  margin-bottom: 0;
+}
+
+.pending,
+.error {
+  margin: 0;
+  font-size: 0.8125rem;
+  opacity: 0.7;
+}
+
+.error {
+  opacity: 0.9;
+  color: var(--dsw-alias-danger, #d5484f);
+}

@@ -1,20 +1,23 @@
 /**
- * Rewind plugin, browser half: the `/rewind` bare-invocation picker and the
- * turn-tail rewind buttons. Every action resolves to a `/rewind …` line
- * submitted through the session's command channel, so the host command stays
- * the single execution path (and the Web, SDK, and no-UI surfaces behave
- * identically).
+ * Rewind plugin, browser half: the per-message rewind action (in the copy /
+ * branch icon strip), the bare-`/rewind` undo picker, the localized `/rewind`
+ * command card, and the persistent rewind marker row — the visible trace a
+ * rewind leaves in the transcript (the marker is a replacement message the
+ * built-in chat definitions never render).
  *
  * @module dsh-plugin-rewind/client
  */
 
 import type { Context as ClientContext } from '@deepseek-ai/cordis'
 import type { SessionId } from '@deepseek-ai/dsh-session/types'
-// Type-only: pulls the client ctx.sessions merge (ClientSessions + binding).
+// Type-only: pulls the client ctx.sessions merge (binding + session.command).
 import type {} from '@deepseek-ai/dsh-api-session-controller/client'
-// Type-only: pulls the ui-conversation SlotMap base.
+// Type-only: pulls the SlotRegistry service merge (ctx.slots).
+import type {} from '@deepseek-ai/dsh-client-ui-renderer/client'
+// Type-only: pulls the uiConversation events service (marker definition).
 import type {} from '@deepseek-ai/dsh-client-ui-conversation/client'
-// Type-only: pulls the chat SlotMap entries (conversation.chat.turnTail).
+// Type-only: pulls the chat slot map (assistant-actions / commandview /
+// conversation.chat.node) and the session standard kit incl. useChat.
 import type {} from '@deepseek-ai/dsh-client-ui-chat/client'
 // Type-only: pulls the standard session/global hook kit.
 import type {} from '@deepseek-ai/dsh-client-ui-session/client'
@@ -22,17 +25,18 @@ import type {} from '@deepseek-ai/dsh-client-ui-session/client'
 import type {} from '@deepseek-ai/dsh-client-ui-commands/client'
 // Type-only: pulls the locale plugin's Context merge (ctx.locale).
 import type {} from '@deepseek-ai/dsh-client-locale/client'
-// Type-only: pulls the SlotRegistry service merge (ctx.slots).
-import type {} from '@deepseek-ai/dsh-client-ui-renderer/client'
-import { TurnTailRewind } from './TurnTailRewind.tsx'
-import type { TurnTailRewindInjected } from './TurnTailRewind.tsx'
+import { RewindAssistantAction } from './RewindAssistantAction.tsx'
+import type { RewindAssistantActionInjected } from './RewindAssistantAction.tsx'
+import { RewindMarkerNode } from './RewindMarkerNode.tsx'
+import { rewindMarkerDefinition } from './rewindMarkerDefinition.ts'
+import { RewindCommandCard } from './RewindCommandCard.tsx'
 import { en, zh } from './locales.ts'
 
 /** Dictionary namespace owned by this plugin. */
 const NS = 'rewind'
 
-/** Required services: the slot registry, the client sessions, the copy, and the command UI. */
-export const inject = ['slots', 'sessions', 'locale', 'commandUi']
+/** Required services: slots, the conversation event registry, sessions, copy, command UI. */
+export const inject = ['slots', 'uiConversation', 'sessions', 'locale', 'commandUi']
 
 /** Offered undo depths in the bare-`/rewind` picker. */
 const PICKER_TURNS = [1, 2, 3, 4, 5] as const
@@ -45,8 +49,8 @@ function submitLine(ctx: ClientContext, sessionId: SessionId, line: string): voi
 }
 
 /**
- * Client plugin body: the dictionaries, the bare-`/rewind` picker, and the
- * per-turn rewind actions.
+ * Client plugin body: dictionaries, the picker, the message action, the
+ * command card, and the marker row.
  * @param ctx - client root context.
  */
 export function apply(ctx: ClientContext): void {
@@ -70,14 +74,30 @@ export function apply(ctx: ClientContext): void {
     },
   }), 'rewind: /rewind picker')
 
-  // Completed-turn rewind actions.
-  ctx.slots.inject('conversation.chat.turnTail', () => ctx.slots.register({
-    name: 'conversation.chat.turnTail',
+  // The per-message rewind action: clock icon between copy and branch.
+  ctx.slots.inject('conversation.chat.assistant-actions', () => ctx.slots.register({
+    name: 'conversation.chat.assistant-actions',
     id: 'rewind',
     order: 5,
     locale: NS,
-    inject: (sessionId): TurnTailRewindInjected => ({
+    inject: (sessionId): RewindAssistantActionInjected => ({
       submit: line => { submitLine(ctx, sessionId, line) },
     }),
-  }, TurnTailRewind))
+  }, RewindAssistantAction))
+
+  // The localized /rewind command row.
+  ctx.slots.inject('conversation.chat.commandview', () => ctx.slots.register({
+    name: 'conversation.chat.commandview',
+    key: 'rewind',
+    locale: NS,
+  }, RewindCommandCard))
+
+  // The visible rewind marker: definition claims the replacement message the
+  // built-in definitions skip; the keyed renderer draws the accent row.
+  ctx.uiConversation.events.register(rewindMarkerDefinition)
+  ctx.slots.inject('conversation.chat.node', () => ctx.slots.register({
+    name: 'conversation.chat.node',
+    key: 'rewind-marker',
+    locale: NS,
+  }, RewindMarkerNode))
 }

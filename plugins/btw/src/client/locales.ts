@@ -12,6 +12,9 @@ export const zh = {
   'panel.emptyQuestion': '问题不能为空',
   'entry.pending': '思考中…',
   'entry.error': '失败',
+  'cmd.untitled': '侧问',
+  'cmd.pending': '思考中…',
+  'cmd.failed': '侧问失败',
 } satisfies Record<string, string>
 
 /** The btw namespace key union. */
@@ -36,4 +39,7 @@ export const en = {
   'panel.emptyQuestion': 'Question must not be empty',
   'entry.pending': 'Thinking…',
   'entry.error': 'Failed',
+  'cmd.untitled': 'Side question',
+  'cmd.pending': 'Thinking…',
+  'cmd.failed': 'Side question failed',
 } satisfies Record<BtwKey, string>
